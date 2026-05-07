@@ -3,6 +3,8 @@ const display = document.querySelector("#display");
 let operator = null;
 let num1 = "";
 let num2 = ""; //default
+let lastOperand = null;
+let justPressedEquals = false;
 
 buttons.addEventListener("click", e => {
     if (!e.target.matches("button")) return;
@@ -23,7 +25,12 @@ function handleOperator(e){
         return;
     }else if(e.target.classList.contains("percent")){
         if(display.value !== ""){
-            num2 = String(Number(display.value) * 0.01);
+            const percentResult = Number(display.value) * 0.01;
+            if(!Number.isFinite(percentResult) || Number.isNaN(percentResult)){
+                handleError("Invalid percent value");
+                return;
+            }
+            num2 = String(percentResult);
             display.value = num2;
         }
         return;
@@ -56,8 +63,10 @@ function handleOperator(e){
 }
 
 function reset(value = "") {
-  num1 = num2 = operator = "";
-  display.value = value;
+    num1 = num2 = operator = "";
+    lastOperand = null;
+    justPressedEquals = false;
+    display.value = value;
 }
 function decimal(){
     if (num2.includes(".")) return;
@@ -65,20 +74,32 @@ function decimal(){
     display.value = num2;
 }
 function handleOperatorInput(first, second){
+    if(justPressedEquals) {
+        justPressedEquals = false;
+        num2 = "";
+        return;
+    }
     if(num1 != "" && num2 != ""){
         calculate(first, second);
     }
-    num1 = num2;
+    num1 = num2 || num1;
     num2 = "";
 }
 function calculate(first, second){
     let result;
-    if(operator === null || first === "" || second === "") return;
+    if(operator === null) return;
+    
+    if(num2 === "" && lastOperand !== null) {
+        first = Number(display.value);
+        second = lastOperand;
+    } else if(num2 === "" && lastOperand === null) {
+        return;
+    }
+    
     switch(operator){
         case "/":
             if(second === 0){
-                display.value = "Error";
-                reset();
+                handleError("Cannot divide by zero");
                 return;
             }
             result = first / second;
@@ -93,7 +114,20 @@ function calculate(first, second){
             result = first + second;
             break;
     }
-    num2 = String(result);
-    display.value = num2;
-    num1 = "";
+
+    if(!Number.isFinite(result) || Number.isNaN(result)){
+        handleError("Invalid calculation result");
+        return;
+    }
+    
+    lastOperand = second;
+    num1 = String(result);
+    display.value = num1;
+    num2 = "";
+    justPressedEquals = true;
+}
+
+function handleError(message) {
+    alert(message);
+    reset("Error");
 }

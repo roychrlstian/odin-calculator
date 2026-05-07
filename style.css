@@ -1,14 +1,28 @@
 body{
+    min-height: 100vh;
     background-color: #f0f0f0;
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+.app {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
 }
 
 h1 {
     color: #333;
     text-align: center;
     padding-bottom: 20px;
+    margin: 0;
 }
 
 input[type="text"] {
@@ -25,11 +39,13 @@ input[type="text"] {
 }
 
 .container {
-    max-width: 600px;
+    max-width: 500px;
     margin: 0 auto;
     background-color: #fff;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    width: 100%;
 }
 
 .buttons{
@@ -55,4 +71,21 @@ input[type="text"] {
 .btn:active {
     transform: translateY(2px) scale(0.98);
     box-shadow: 0 0 0 rgba(0, 0, 0, 0.2);
+}
+
+.site-footer {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding-top: 16px;
+    color: #555;
+    font-size: 14px;
+}
+
+.github-mark {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 auto;
 }
